@@ -1,0 +1,17 @@
+# Node.js API (.tattooStudio-api)
+tattooStudio-api/node_modules/
+tattooStudio-api/package-lock.json
+tattooStudio-api/.env
+tattooStudio-api/dist/ 
+
+# React App (.tattoStudio)
+tattoStudio/node_modules/
+tattoStudio/build/
+tattoStudio/package-lock.json
+tattoStudio/.env 
+
+.DS_Store
+Thumbs.db
+*.log
+.idea/ 
+.vscode/
