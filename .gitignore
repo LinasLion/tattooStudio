@@ -4,14 +4,19 @@ tattooStudio-api/package-lock.json
 tattooStudio-api/.env
 tattooStudio-api/dist/ 
 
-# React App (.tattoStudio)
-tattoStudio/node_modules/
-tattoStudio/build/
-tattoStudio/package-lock.json
-tattoStudio/.env 
+design
 
+# React App (.tattooStudio)
+tattooStudio/node_modules/
+tattooStudio/build/
+tattooStudio/package-lock.json
+tattooStudio/.env 
+
+# System files
 .DS_Store
 Thumbs.db
 *.log
+
+# IDE files
 .idea/ 
 .vscode/
