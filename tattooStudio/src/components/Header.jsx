@@ -1,5 +1,5 @@
 import logo from "../assets/img/logo.png";
-import HeaderButton from "./HeaderButton"; // Ensure LinkButton is imported
+import HeaderButton from "./HeaderButton";
 
 export function Header() {
   return (
@@ -33,8 +33,8 @@ export function Header() {
         </li>
         <li>
           <HeaderButton
-            path="/minds"
-            title="Minds"
+            path="/posts"
+            title="Posts"
             className="header-navigation__menu__link"
           />
         </li>

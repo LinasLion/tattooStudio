@@ -1,74 +1,83 @@
-import React, { useState } from "react";
+import React, {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 
 const API_URL = "http://localhost:5000";
 
 export function Login() {
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/home');
+        }
+    }, [navigate]);
 
-    if (!password) {
-      alert("Please enter your password");
-      return;
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    setLoading(true);
+        if (!password) {
+            alert("Please enter your password");
+            return;
+        }
 
-    try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password }),
-      });
+        setLoading(true);
 
-      const data = await response.json();
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({password}),
+            });
 
-      if (!response.ok) {
-        throw new Error(data.error || "Authentication failed");
-      }
+            const data = await response.json();
 
-      localStorage.setItem("token", data.token);
+            if (!response.ok) {
+                throw new Error(data.error || "Authentication failed");
+            }
 
-      window.location.href = "/home";
-    } catch (err) {
-      alert("Invalid password. Please try again.");
-      console.error("Login error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+            localStorage.setItem("token", data.token);
 
-  return (
-    <div className="content">
-      <div className="login-container">
-        <h1 className="websiteTitle">TATTOO STUDIO</h1>
-        <div className="login-form-wrapper">
-          <h2 className="login-title">Admin Access</h2>
-          <form className="login-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter admin password"
-                required
-              />
+            navigate('/home');
+        } catch (err) {
+            alert("Invalid password. Please try again.");
+            console.error("Login error:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="content">
+            <div className="login-container">
+                <h1 className="websiteTitle">TATTOO STUDIO</h1>
+                <div className="login-form-wrapper">
+                    <h2 className="login-title">Admin Access</h2>
+                    <form className="login-form" onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Enter admin password"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-actions">
+                            <button type="submit" className="login-button" disabled={loading}>
+                                {loading ? "Signing In..." : "Sign In"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <div className="form-actions">
-              <button type="submit" className="login-button" disabled={loading}>
-                {loading ? "Signing In..." : "Sign In"}
-              </button>
-            </div>
-          </form>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

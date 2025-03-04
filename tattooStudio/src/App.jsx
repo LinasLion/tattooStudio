@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom"; // Ensure you import Routes and Route
+import { Routes, Route } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Home } from "./pages/Home";
 import { Studio } from "./pages/Studio";
@@ -16,7 +16,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/studio" element={<Studio />} />
         <Route path="/gallery" element={<Home />} />
-        <Route path="/minds" element={<Posts />} />
+        <Route path="/posts" element={<Posts />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </div>
