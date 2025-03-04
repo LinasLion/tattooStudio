@@ -8,6 +8,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const JWT_SECRET = process.env.JWT_SECRET;
 
 router.post("/login", (req, res) => {
+  console.log("POST /login");
   const { password } = req.body;
   if (password !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: "Unauthorized" });

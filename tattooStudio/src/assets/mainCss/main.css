@@ -37,10 +37,8 @@ body {
     justify-content: center;
 }
 
-/*start header navigation rules*/
 .header-navigation {
     width: 200px;
-    /*border-right: 2px solid #252525;*/
     min-height: 100vh;
     max-height: 100%;
 }
@@ -74,9 +72,6 @@ body {
     font-size: 20px;
 }
 
-/*end header navigation rules*/
-
-/*start main content rules*/
 .content {
     width: 700px;
     min-height: 100vh;
@@ -138,16 +133,12 @@ body {
     line-height: 25px;
 }
 
-/*end main content rules*/
-
-/* Studio gallery section */
 .studio-photos {
     width: 100%;
     padding: 30px 0;
     background-color: var(--bg1);
 }
 
-/* Gallery grid layout */
 .studio__gallery {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -175,7 +166,6 @@ body {
     cursor: pointer;
 }
 
-/* Modal styles */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -187,6 +177,43 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+}
+
+.modal-overlay-preview {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-content-preview {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-image-preview {
+    display: block;
+    max-width: 100%;
+    max-height: 85vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
 }
 
 .modal-content {
@@ -214,7 +241,6 @@ body {
     padding: 5px;
 }
 
-/* Login page styles */
 .login-container {
     display: flex;
     flex-direction: column;
@@ -226,9 +252,9 @@ body {
 }
 
 .login-form-wrapper {
-    background-color: var(--bg1); /* Using the cream background color */
+    background-color: var(--bg1);
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(26, 34, 46, 0.15); /* Using color1 for shadow */
+    box-shadow: 0 4px 15px rgba(26, 34, 46, 0.15);
     padding: 30px;
     width: 100%;
     max-width: 450px;
@@ -237,7 +263,6 @@ body {
     border: 1px solid var(--color2);
 }
 
-/* Add decorative element similar to the author image style */
 .login-form-wrapper:after {
     width: 100%;
     height: 100%;
@@ -250,13 +275,13 @@ body {
 }
 
 .login-title {
-    font-family: "Trade", sans-serif; /* Using the same font as website title */
+    font-family: "Trade", sans-serif;
     text-align: center;
     margin-bottom: 25px;
     font-size: 28px;
     font-weight: 600;
     color: var(--color2);
-    transform: rotate(-2deg); /* Slight rotation like website title */
+    transform: rotate(-2deg);
     font-style: italic;
 }
 
@@ -326,7 +351,6 @@ body {
     font-family: "Merry", sans-serif;
 }
 
-/* Admin shared styles */
 .admin-container {
     display: flex;
     flex-direction: column;
@@ -376,6 +400,7 @@ body {
     cursor: pointer;
     transition: background-color 0.2s;
     font-family: "Merry", sans-serif;
+    margin-top: 5px;
 }
 
 .admin-button:hover {
@@ -397,7 +422,6 @@ body {
     font-size: 18px;
 }
 
-/* Posts management specific styles */
 .admin-form textarea {
     width: 100%;
     padding: 12px 15px;
@@ -458,7 +482,6 @@ body {
     font-family: "Merry", sans-serif;
 }
 
-/* Gallery management specific styles */
 .upload-form {
     display: flex;
     flex-direction: column;
@@ -529,7 +552,6 @@ body {
     font-style: italic;
 }
 
-/* File upload styles */
 .file-upload-container {
     display: flex;
     align-items: center;
@@ -538,7 +560,7 @@ body {
 }
 
 .file-input {
-    display: none; /* Hide the default file input */
+    display: none;
 }
 
 .file-select-button {
@@ -579,7 +601,6 @@ body {
     display: block;
 }
 
-/* Modal styles */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -655,11 +676,9 @@ body {
     margin-bottom: 20px;
 }
 
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .studio__gallery {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .admin-gallery {
@@ -680,7 +699,7 @@ body {
 
 @media (max-width: 480px) {
     .studio__gallery {
-        grid-template-columns: 1fr; /* 1 column on mobile */
+        grid-template-columns: 1fr;
     }
 
     .admin-gallery {
@@ -713,7 +732,6 @@ body {
     }
 }
 
-/* Gallery container styles */
 .gallery-container {
     width: 100%;
     max-width: 1200px;
@@ -735,7 +753,6 @@ body {
     color: #555;
 }
 
-/* Gallery grid styles */
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -825,20 +842,22 @@ body {
 }
 
 .gallery-button, .upload-photo-btn {
-    background-color: #4a90e2;
+    padding: 10px 15px;
+    background-color: var(--color1);
     color: white;
     border: none;
-    padding: 10px 15px;
     border-radius: 4px;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 16px;
+    transition: background-color 0.2s;
+    font-family: "Merry", sans-serif;
+    margin-top: 5px;
 }
 
 .gallery-button:hover, .upload-photo-btn:hover {
     background-color: #3a7bc8;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

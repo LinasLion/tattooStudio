@@ -7,13 +7,21 @@ const Post = require("../models/post");
 
 const router = express.Router();
 
+/**
+ * Configure multer storage for post images
+ * - Saves files to uploads/posts directory
+ * - Creates directory if it doesn't exist
+ * - Generates unique filenames with timestamps
+ */
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: async (req, file, cb) => {
         const uploadDir = path.join(__dirname, '../uploads/posts');
-
-        fs.mkdir(uploadDir, {recursive: true})
-            .then(() => cb(null, uploadDir))
-            .catch(err => cb(err, uploadDir));
+        try {
+            await fs.mkdir(uploadDir, {recursive: true});
+            cb(null, uploadDir);
+        } catch (err) {
+            cb(err, uploadDir);
+        }
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
@@ -21,6 +29,9 @@ const storage = multer.diskStorage({
     }
 });
 
+/**
+ * Filter function to only allow image files
+ */
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
@@ -29,6 +40,9 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+/**
+ * Configure multer with storage, file filter, and size limits
+ */
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
@@ -37,6 +51,48 @@ const upload = multer({
     }
 });
 
+/**
+ * Helper function to process post images
+ * Reads image file and converts to base64 string
+ */
+const processPostImage = async (post) => {
+    let imageBlob = null;
+
+    if (post.image) {
+        try {
+            const imagePath = path.join(__dirname, `..${post.image}`);
+            await fs.access(imagePath);
+            const imageBuffer = await fs.readFile(imagePath);
+            imageBlob = imageBuffer.toString('base64');
+        } catch (imageError) {
+            console.error(`Error reading image for post ${post._id}:`, imageError);
+        }
+    }
+
+    return {
+        ...post,
+        imageBlob,
+    };
+};
+
+/**
+ * Helper function to clean up uploaded file on error
+ */
+const cleanupUploadedFile = async (filePath) => {
+    if (filePath) {
+        try {
+            await fs.unlink(filePath);
+        } catch (err) {
+            console.error('Error cleaning up file:', err);
+        }
+    }
+};
+
+/**
+ * GET /posts
+ * Retrieves all posts sorted by creation date (newest first)
+ * Includes base64-encoded images if available
+ */
 router.get('/', async (req, res) => {
     console.log("GET /posts");
     try {
@@ -44,28 +100,7 @@ router.get('/', async (req, res) => {
             .sort({createdAt: -1})
             .lean();
 
-        const processedPosts = await Promise.all(posts.map(async (post) => {
-            let imageBlob = null;
-
-            if (post.image) {
-                try {
-                    const imagePath = path.join(__dirname, `..${post.image}`);
-
-                    await fs.access(imagePath);
-
-                    const imageBuffer = await fs.readFile(imagePath);
-                    imageBlob = imageBuffer.toString('base64');
-                } catch (imageError) {
-                    console.error(`Error reading image for post ${post._id}:`, imageError);
-                }
-            }
-
-            return {
-                ...post,
-                imageBlob,
-            };
-        }));
-
+        const processedPosts = await Promise.all(posts.map(processPostImage));
         res.json(processedPosts);
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -76,6 +111,11 @@ router.get('/', async (req, res) => {
     }
 });
 
+/**
+ * POST /posts
+ * Creates a new post with optional image upload
+ * Requires authentication
+ */
 router.post('/', authenticate, upload.single('image'), async (req, res) => {
     console.log("POST /posts");
     try {
@@ -83,8 +123,7 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
 
         if (!title || !content) {
             if (req.file) {
-                await fs.unlink(req.file.path).catch(() => {
-                });
+                await cleanupUploadedFile(req.file.path);
             }
             return res.status(400).json({
                 message: "Title and content are required"
@@ -101,14 +140,12 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
         };
 
         const post = await Post.create(postData);
-
         res.status(201).json(post);
     } catch (error) {
         console.error('Error creating post:', error);
 
         if (req.file) {
-            await fs.unlink(req.file.path).catch(() => {
-            });
+            await cleanupUploadedFile(req.file.path);
         }
 
         res.status(500).json({
@@ -118,7 +155,11 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
     }
 });
 
-
+/**
+ * DELETE /posts/:id
+ * Deletes a post and its associated image
+ * Requires authentication
+ */
 router.delete("/:id", authenticate, async (req, res) => {
     console.log("DELETE /posts/:id");
     try {
@@ -131,12 +172,10 @@ router.delete("/:id", authenticate, async (req, res) => {
 
         if (post.image) {
             const imagePath = path.join(__dirname, `..${post.image}`);
-            await fs.unlink(imagePath).catch(() => {
-            });
+            await cleanupUploadedFile(imagePath);
         }
 
         await Post.findByIdAndDelete(req.params.id);
-
         res.json({message: "Post deleted successfully"});
     } catch (error) {
         console.error('Error deleting post:', error);

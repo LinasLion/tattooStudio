@@ -10,7 +10,7 @@ design
 tattooStudio/node_modules/
 tattooStudio/build/
 tattooStudio/package-lock.json
-tattooStudio/.env 
+tattooStudio/src/.env
 
 # System files
 .DS_Store
