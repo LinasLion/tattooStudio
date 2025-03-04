@@ -5,6 +5,7 @@ import { Home } from "./pages/Home";
 import { Studio } from "./pages/Studio";
 import { Login } from "./pages/Login";
 import "./assets/mainCss/main.css";
+import {Posts} from "./pages/Posts.jsx";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/studio" element={<Studio />} />
         <Route path="/gallery" element={<Home />} />
-        <Route path="/minds" element={<Home />} />
+        <Route path="/minds" element={<Posts />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </div>

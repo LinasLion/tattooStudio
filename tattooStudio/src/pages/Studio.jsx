@@ -1,62 +1,56 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import image1 from "../public/studio/images1.jpg";
 import image2 from "../public/studio/images2.jpg";
 import image3 from "../public/studio/images3.jpg";
 import image4 from "../public/studio/images4.jpg";
+import {PhotoView} from "../components/PhotoView.jsx";
 
 export function Studio() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [currentImage, setCurrentImage] = useState(null);
 
-  const images = [
-    { src: image1, alt: "Studio Image 1" },
-    { src: image2, alt: "Studio Image 2" },
-    { src: image3, alt: "Studio Image 3" },
-    { src: image4, alt: "Studio Image 4" },
-  ];
+    const images = [
+        {src: image1, alt: "Studio Image 1"},
+        {src: image2, alt: "Studio Image 2"},
+        {src: image3, alt: "Studio Image 3"},
+        {src: image4, alt: "Studio Image 4"},
+    ];
 
-  const openModal = (image) => {
-    setCurrentImage(image);
-    setModalOpen(true);
-    document.body.style.overflow = "hidden";
-  };
+    const openModal = (image) => {
+        setCurrentImage(image);
+        setModalOpen(true);
+        document.body.style.overflow = "hidden";
+    };
 
-  const closeModal = () => {
-    setModalOpen(false);
-    document.body.style.overflow = "auto";
-  };
+    const closeModal = () => {
+        setModalOpen(false);
+        document.body.style.overflow = "auto";
+    };
 
-  return (
-    <div className="content">
-      <h1 className="websiteTitle">TATTOO STUDIO</h1>
-      <div className="studio-photos">
-        <div className="studio__gallery">
-          {images.map((image, index) => (
-            <div className="studio__photo" key={index}>
-              <img
-                src={image.src}
-                alt={image.alt}
-                onClick={() => openModal(image)}
-                style={{ cursor: "pointer" }} // Add pointer cursor to indicate clickable
-              />
+    return (
+        <div className="content">
+            <h1 className="websiteTitle">TATTOO STUDIO</h1>
+            <div className="studio-photos">
+                <div className="studio__gallery">
+                    {images.map((image, index) => (
+                        <div className="studio__photo" key={index}>
+                            <img
+                                src={image.src}
+                                alt={image.alt}
+                                onClick={() => openModal(image)}
+                                style={{cursor: "pointer"}} // Add pointer cursor to indicate clickable
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
-          ))}
+            {modalOpen && (
+                <PhotoView
+                    src={currentImage.src}
+                    alt={currentImage.alt}
+                    closeModal={closeModal}
+                />
+            )}
         </div>
-      </div>
-      {modalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <span className="close-button" onClick={closeModal}>
-              &times;
-            </span>
-            <img
-              src={currentImage?.src}
-              alt={currentImage?.alt}
-              className="modal-image"
-            />
-          </div>
-        </div>
-      )}
-    </div>
-  );
+    );
 }

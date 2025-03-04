@@ -226,8 +226,9 @@ body {
 }
 
 .login-form-wrapper {
-    background-color: var(--bg1);
+    background-color: var(--bg1); /* Using the cream background color */
     border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(26, 34, 46, 0.15); /* Using color1 for shadow */
     padding: 30px;
     width: 100%;
     max-width: 450px;
@@ -236,6 +237,7 @@ body {
     border: 1px solid var(--color2);
 }
 
+/* Add decorative element similar to the author image style */
 .login-form-wrapper:after {
     width: 100%;
     height: 100%;
@@ -243,18 +245,20 @@ body {
     display: block;
     position: absolute;
     z-index: -1;
+    background-image: url("../img/bg1.png");
     top: 5px;
     left: -7px;
+    border: 1px solid var(--color2);
 }
 
 .login-title {
-    font-family: "Trade", sans-serif;
+    font-family: "Trade", sans-serif; /* Using the same font as website title */
     text-align: center;
     margin-bottom: 25px;
     font-size: 28px;
     font-weight: 600;
     color: var(--color2);
-    transform: rotate(-2deg);
+    transform: rotate(-2deg); /* Slight rotation like website title */
     font-style: italic;
 }
 
@@ -324,10 +328,217 @@ body {
     font-family: "Merry", sans-serif;
 }
 
+/* Admin shared styles */
+.admin-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.admin-form-wrapper {
+    background-color: var(--bg1);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(26, 34, 46, 0.15);
+    padding: 25px;
+    margin-bottom: 30px;
+    position: relative;
+    border: 1px solid var(--color2);
+}
+
+.admin-form-wrapper:after {
+    width: 100%;
+    height: 100%;
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: -1;
+    top: 5px;
+    left: -7px;
+}
+
+.admin-title {
+    font-family: "Trade", sans-serif;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color2);
+    transform: rotate(-2deg);
+    font-style: italic;
+}
+
+.admin-button, .delete-button {
+    padding: 10px 15px;
+    background-color: var(--color1);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: "Merry", sans-serif;
+}
+
+.admin-button:hover {
+    background-color: var(--color2);
+}
+
+.delete-button {
+    background-color: #d32f2f;
+}
+
+.delete-button:hover {
+    background-color: #b71c1c;
+}
+
+.admin-loading {
+    text-align: center;
+    padding: 30px;
+    font-family: "Merry", sans-serif;
+    font-size: 18px;
+}
+
+/* Posts management specific styles */
+.admin-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--color2);
+    border-radius: 4px;
+    font-size: 16px;
+    resize: vertical;
+    min-height: 150px;
+    font-family: "Merry", sans-serif;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.posts-list {
+    margin-top: 30px;
+}
+
+.post-item {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.post-header h3 {
+    font-family: "Merry", sans-serif;
+    font-size: 20px;
+    color: var(--color1);
+}
+
+.post-image {
+    margin-bottom: 15px;
+}
+
+.post-image img {
+    max-width: 100%;
+    border-radius: 4px;
+    max-height: 300px;
+    object-fit: cover;
+}
+
+.post-content {
+    font-family: "Merry", sans-serif;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.post-date {
+    font-size: 14px;
+    color: #777;
+    font-family: "Merry", sans-serif;
+}
+
+/* Gallery management specific styles */
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.file-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: var(--color1);
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    font-family: "Merry", sans-serif;
+    text-align: center;
+    width: 200px;
+}
+
+.file-label:hover {
+    background-color: var(--color2);
+}
+
+.upload-help {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #777;
+    font-family: "Merry", sans-serif;
+}
+
+.admin-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.admin-photo {
+    position: relative;
+}
+
+.admin-photo:hover .image-actions {
+    opacity: 1;
+}
+
+.image-actions {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.no-posts, .no-images {
+    text-align: center;
+    padding: 30px;
+    font-family: "Merry", sans-serif;
+    color: #777;
+    font-style: italic;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .studio__gallery {
         grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+    }
+
+    .admin-gallery {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .websiteTitle {
@@ -347,6 +558,10 @@ body {
         grid-template-columns: 1fr; /* 1 column on mobile */
     }
 
+    .admin-gallery {
+        grid-template-columns: 1fr;
+    }
+
     .login-form-wrapper {
         padding: 20px;
     }
@@ -361,5 +576,14 @@ body {
 
     .websiteTitle {
         font-size: 40px;
+    }
+
+    .post-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .post-header button {
+        margin-top: 10px;
     }
 }

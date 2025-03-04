@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 function HeaderButton({ path, title, className }) {
   const navigate = useNavigate();
 
-  function handleClick(argumento) {
-    navigate(argumento);
-  }
+  const handleClick = (path) => {
+    navigate(path);
+  };
 
   return (
     <div className={className} onClick={() => handleClick(path)}>

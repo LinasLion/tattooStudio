@@ -38,13 +38,15 @@ export function Header() {
             className="header-navigation__menu__link"
           />
         </li>
-        <li>
-          <HeaderButton
-            path="/login"
-            title="Login"
-            className="header-navigation__menu__link"
-          />
-        </li>
+        {!localStorage.getItem("token") && (
+          <li>
+            <HeaderButton
+              path="/login"
+              title="Login"
+              className="header-navigation__menu__link"
+            />
+          </li>
+        )}
       </ul>
     </header>
   );
