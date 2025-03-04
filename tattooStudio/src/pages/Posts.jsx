@@ -7,11 +7,10 @@ export function Posts() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentImage, setCurrentImage] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false);
+    const [photoModalOpen, setPhotoModalOpen] = useState(false);
+    const [formModalOpen, setFormModalOpen] = useState(false);
     const [newPost, setNewPost] = useState({
-        title: "",
-        content: "",
-        previewImage: null
+        title: "", content: "", previewImage: null
     });
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadStatus, setUploadStatus] = useState("");
@@ -43,8 +42,7 @@ export function Posts() {
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setNewPost(prev => ({
-            ...prev,
-            [name]: value
+            ...prev, [name]: value
         }));
     };
 
@@ -54,8 +52,7 @@ export function Posts() {
             const reader = new FileReader();
             reader.onload = (event) => {
                 setNewPost(prev => ({
-                    ...prev,
-                    previewImage: event.target.result
+                    ...prev, previewImage: event.target.result
                 }));
             };
             reader.readAsDataURL(e.target.files[0]);
@@ -76,11 +73,9 @@ export function Posts() {
 
             const token = localStorage.getItem('token');
             const response = await fetch(`${API_URL}/posts`, {
-                method: 'POST',
-                headers: {
+                method: 'POST', headers: {
                     'Authorization': `Bearer ${token}`
-                },
-                body: formData
+                }, body: formData
             });
 
             console.log("Create post response:", response);
@@ -94,6 +89,7 @@ export function Posts() {
             setNewPost({title: "", content: "", previewImage: null});
             setSelectedFile(null);
             setUploadStatus("");
+            setFormModalOpen(false);
             if (fileInputRef.current) {
                 fileInputRef.current.value = null;
             }
@@ -111,8 +107,7 @@ export function Posts() {
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`${API_URL}/posts/${postId}`, {
-                method: 'DELETE',
-                headers: {
+                method: 'DELETE', headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
@@ -128,15 +123,32 @@ export function Posts() {
         }
     };
 
-    const openModal = (image) => {
+    const openPhotoModal = (image) => {
         setCurrentImage(image);
-        setModalOpen(true);
+        setPhotoModalOpen(true);
         document.body.style.overflow = "hidden";
     };
 
-    const closeModal = () => {
-        setModalOpen(false);
+    const closePhotoModal = () => {
+        setPhotoModalOpen(false);
         document.body.style.overflow = "auto";
+    };
+
+    const openFormModal = () => {
+        setFormModalOpen(true);
+        document.body.style.overflow = "hidden";
+    };
+
+    const closeFormModal = () => {
+        setFormModalOpen(false);
+        document.body.style.overflow = "auto";
+        // Reset form state
+        setNewPost({title: "", content: "", previewImage: null});
+        setSelectedFile(null);
+        setUploadStatus("");
+        if (fileInputRef.current) {
+            fileInputRef.current.value = null;
+        }
     };
 
     if (loading) return <div className="admin-loading">Loading posts...</div>;
@@ -144,55 +156,67 @@ export function Posts() {
     const isAdmin = localStorage.getItem('token');
 
     const renderPosts = () => {
-        return posts.map(post => (
-            <div key={post._id} className="post-item">
-                <div className="post-header">
-                    <h3>{post.title}</h3>
-                    {isAdmin && (
-                        <button
-                            onClick={() => handleDeletePost(post._id)}
-                            className="delete-button"
-                        >
-                            Delete
-                        </button>
-                    )}
-                </div>
-                {post.imageBlob ? (
-                    <div className="post-image">
-                        <img
-                            src={`data:image/jpeg;base64,${post.imageBlob}`}
-                            alt={post.title}
-                            onClick={() => openModal({
-                                src: `data:image/jpeg;base64,${post.imageBlob}`,
-                                alt: post.title
-                            })}
-                            style={{cursor: "pointer"}}
-                        />
-                    </div>
-                ) : (
-                    <div className="post-image-placeholder">
-                        No image available at moment. The image may appear after a refresh.
-                    </div>
-                )}
-                <div className="post-content">
-                    {post.content.substring(0, 150)}
-                    {post.content.length > 150 ? "..." : ""}
-                </div>
-                <div className="post-date">
-                    Posted on: {new Date(post.createdAt).toLocaleDateString()}
-                </div>
+        return posts.map(post => (<div key={post._id} className="post-item">
+            <div className="post-header">
+                <h3>{post.title}</h3>
+                {isAdmin && (<button
+                    onClick={() => handleDeletePost(post._id)}
+                    className="delete-button"
+                >
+                    Delete
+                </button>)}
             </div>
-        ));
+            {post.imageBlob ? (<div className="post-image">
+                <img
+                    src={`data:image/jpeg;base64,${post.imageBlob}`}
+                    alt={post.title}
+                    onClick={() => openPhotoModal({
+                        src: `data:image/jpeg;base64,${post.imageBlob}`, alt: post.title
+                    })}
+                    style={{cursor: "pointer"}}
+                />
+            </div>) : (<div className="post-image-placeholder">
+                No image available at moment. The image may appear after a refresh.
+            </div>)}
+            <div className="post-content">
+                {post.content.substring(0, 150)}
+                {post.content.length > 150 ? "..." : ""}
+            </div>
+            <div className="post-date">
+                Posted on: {new Date(post.createdAt).toLocaleDateString()}
+            </div>
+        </div>));
     };
 
-    return (
-        <div className="content">
-            <div className="admin-container">
-                <h1 className="websiteTitle">Posts</h1>
+    return (<div className="content">
+        <div className="admin-container">
+            <h1 className="websiteTitle">Posts</h1>
 
-                {isAdmin && (
-                    <div className="admin-form-wrapper">
-                        <h2 className="admin-title">Create New Post</h2>
+            {isAdmin && (<div className="admin-actions">
+                <button onClick={openFormModal} className="admin-button create-post-btn">
+                    Create New Post
+                </button>
+            </div>)}
+
+            <div className="posts-list">
+                <h2 className="admin-title">Existing Posts</h2>
+                {posts.length === 0 ? (<p className="no-posts">No posts available</p>) : (renderPosts())}
+            </div>
+
+            {photoModalOpen && currentImage && (<PhotoView
+                src={currentImage.src}
+                alt={currentImage.alt}
+                closeModal={closePhotoModal}
+            />)}
+
+            {/* Modal for Create Post Form */}
+            {formModalOpen && (<div className="modal-overlay">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h2 className="modal-title">Create New Post</h2>
+                        <button className="modal-close" onClick={closeFormModal}>×</button>
+                    </div>
+                    <div className="modal-body">
                         <form className="admin-form" onSubmit={handleCreatePost}>
                             <div className="form-group">
                                 <label htmlFor="title">Title</label>
@@ -239,43 +263,27 @@ export function Posts() {
                                     </button>
                                     <span className="file-status">{uploadStatus}</span>
                                 </div>
-                                {newPost.previewImage && (
-                                    <div className="image-preview">
-                                        <img
-                                            src={newPost.previewImage}
-                                            alt="Preview"
-                                            style={{maxWidth: '200px', marginTop: '10px'}}
-                                        />
-                                    </div>
-                                )}
+                                {newPost.previewImage && (<div className="image-preview">
+                                    <img
+                                        src={newPost.previewImage}
+                                        alt="Preview"
+                                        style={{maxWidth: '200px', marginTop: '10px'}}
+                                    />
+                                </div>)}
                             </div>
 
                             <div className="form-actions">
+                                <button type="button" className="cancel-button" onClick={closeFormModal}>
+                                    Cancel
+                                </button>
                                 <button type="submit" className="admin-button">
                                     Create Post
                                 </button>
                             </div>
                         </form>
                     </div>
-                )}
-
-                <div className="posts-list">
-                    <h2 className="admin-title">Existing Posts</h2>
-                    {posts.length === 0 ? (
-                        <p className="no-posts">No posts available</p>
-                    ) : (
-                        renderPosts()
-                    )}
                 </div>
-
-                {modalOpen && currentImage && (
-                    <PhotoView
-                        src={currentImage.src}
-                        alt={currentImage.alt}
-                        closeModal={closeModal}
-                    />
-                )}
-            </div>
+            </div>)}
         </div>
-    );
+    </div>);
 }

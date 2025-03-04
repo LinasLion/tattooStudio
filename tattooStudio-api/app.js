@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { authRouter }= require("./routes/auth"); // Import both
 const postsRouter = require("./routes/posts");
+const galleryRouter = require("./routes/gallery");
 const mongoose = require("mongoose");
 
 const app = express();
@@ -37,6 +38,7 @@ mongoose.connection.on('disconnected', () => {
 
 app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
+app.use("/gallery", galleryRouter);
 
 
 const PORT = 5000;
