@@ -337,7 +337,7 @@ export function Posts() {
                                     <img
                                         src={newPost.previewImage}
                                         alt="Preview"
-                                        style={{maxWidth: '200px', marginTop: '10px'}}
+                                        className="image-preview-content"
                                     />
                                 </div>)}
                             </div>

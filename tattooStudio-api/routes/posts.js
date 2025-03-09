@@ -182,6 +182,8 @@ router.patch("/:id", authenticate, upload.single('image'), async (req, res) => {
         if (title !== undefined) updateData.title = title;
         if (content !== undefined) updateData.content = content;
 
+        updateData.updatedAt = new Date();
+
         if (req.file) {
             if (existingPost.image) {
                 const oldImagePath = path.join(__dirname, `..${existingPost.image}`);

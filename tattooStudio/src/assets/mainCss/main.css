@@ -75,9 +75,8 @@ body {
 .content {
     width: 700px;
     min-height: 100vh;
-    background:
-        url("../img/bg2.png") no-repeat 110% 0,
-        url("../img/bg3.png") no-repeat center bottom;
+    background: url("../img/bg2.png") no-repeat 110% 0,
+    url("../img/bg3.png") no-repeat center bottom;
     background-size: 55%;
     padding: 50px 0 55px 15px;
     border-left: 2px solid #252525;
@@ -109,6 +108,7 @@ body {
     object-fit: cover;
     filter: grayscale(60%);
 }
+
 .websiteTitle {
     width: 55%;
     text-align: center;
@@ -117,6 +117,7 @@ body {
     transform: rotate(-4deg);
     font-style: italic;
 }
+
 .websiteSubtitle {
     color: var(--color2);
     font-size: 22px;
@@ -433,6 +434,20 @@ body {
     margin-right: 5px;
 }
 
+.cancel-button {
+    background-color: #e0e0e0;
+    padding: 10px 15px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: "Merry", sans-serif;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
 .admin-button:hover {
     background-color: var(--color2);
 }
@@ -618,18 +633,25 @@ body {
 
 .image-preview {
     margin-top: 10px;
+    width: 100%;
     max-width: 100%;
     border-radius: 4px;
     overflow: hidden;
     border: 1px solid #ddd;
+    height: 200px; /* Fixed height container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f8f8;
 }
 
 .image-preview img {
     width: 100%;
-    max-height: 200px;
-    object-fit: cover;
+    height: 100%;
+    object-fit: contain; /* Changed from cover to contain */
     display: block;
 }
+
 
 .modal-overlay {
     position: fixed;
@@ -688,18 +710,6 @@ body {
     justify-content: flex-end;
     gap: 10px;
     margin-top: 20px;
-}
-
-.cancel-button {
-    background-color: #e0e0e0;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.cancel-button:hover {
-    background-color: #d0d0d0;
 }
 
 .create-post-btn {

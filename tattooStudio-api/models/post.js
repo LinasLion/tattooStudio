@@ -19,6 +19,10 @@ const PostSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    updateAt: {
+        type: Date,
+        default: null
     }
 }, {
     toJSON: { virtuals: true },
@@ -27,6 +31,10 @@ const PostSchema = new mongoose.Schema({
 
 PostSchema.virtual('formattedCreatedAt').get(function() {
     return this.createdAt.toLocaleString();
+});
+
+PostSchema.virtual('formattedUpdatedAt').get(function() {
+    return this.updateAt.toLocaleString();
 });
 
 PostSchema.index({ title: 'text', content: 'text' });
