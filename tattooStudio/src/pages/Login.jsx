@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/authContext.jsx";
-import api from "../services/api";
+import apiClient from "../services/api";
 
 export function Login() {
     const [password, setPassword] = useState("");
@@ -26,7 +26,7 @@ export function Login() {
         setLoading(true);
 
         try {
-            const response = await api.post("/auth/login", { password });
+            const response = await apiClient.post("/auth/login", { password });
 
             localStorage.setItem("token", response.data.token);
 
