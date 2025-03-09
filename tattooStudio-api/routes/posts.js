@@ -56,21 +56,24 @@ const upload = multer({
  * Reads image file and converts to base64 string
  */
 const processPostImage = async (post) => {
-    let imageBlob = null;
+    if (!post) return null;
 
-    if (post.image) {
+    let imageBlob = null;
+    const processedPost = { ...post };
+
+    if (processedPost.image) {
         try {
-            const imagePath = path.join(__dirname, `..${post.image}`);
+            const imagePath = path.join(__dirname, `..${processedPost.image}`);
             await fs.access(imagePath);
             const imageBuffer = await fs.readFile(imagePath);
             imageBlob = imageBuffer.toString('base64');
         } catch (imageError) {
-            console.error(`Error reading image for post ${post._id}:`, imageError);
+            console.error(`Error reading image for post ${processedPost._id}:`, imageError);
         }
     }
 
     return {
-        ...post,
+        ...processedPost,
         imageBlob,
     };
 };
@@ -150,6 +153,62 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
 
         res.status(500).json({
             message: "Error creating post",
+            error: error.message
+        });
+    }
+});
+
+/**
+ * PATCH /posts/:id
+ * Updates an existing post with optional image replacement
+ * Requires authentication
+ */
+router.patch("/:id", authenticate, upload.single('image'), async (req, res) => {
+    console.log("PATCH /posts/:id");
+    try {
+        const { title, content } = req.body;
+        const postId = req.params.id;
+
+        const existingPost = await Post.findById(postId);
+
+        if (!existingPost) {
+            if (req.file) {
+                await cleanupUploadedFile(req.file.path);
+            }
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        const updateData = {};
+        if (title !== undefined) updateData.title = title;
+        if (content !== undefined) updateData.content = content;
+
+        if (req.file) {
+            if (existingPost.image) {
+                const oldImagePath = path.join(__dirname, `..${existingPost.image}`);
+                await cleanupUploadedFile(oldImagePath);
+            }
+
+            updateData.image = `/uploads/posts/${path.basename(req.file.path)}`;
+        }
+
+        const updatedPost = await Post.findByIdAndUpdate(
+            postId,
+            updateData,
+            { new: true } // Return the updated document
+        ).lean();
+
+        const processedPost = await processPostImage(updatedPost);
+
+        res.json(processedPost);
+    } catch (error) {
+        console.error('Error updating post:', error);
+
+        if (req.file) {
+            await cleanupUploadedFile(req.file.path);
+        }
+
+        res.status(500).json({
+            message: "Error updating post",
             error: error.message
         });
     }

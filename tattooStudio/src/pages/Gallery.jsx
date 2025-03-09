@@ -169,7 +169,6 @@ export function Gallery() {
                         </div>)}
                     </div>))}
                 </div>)}
-
             {photoModalOpen && currentImage && (<PhotoView
                 src={currentImage.src}
                 alt={currentImage.alt}

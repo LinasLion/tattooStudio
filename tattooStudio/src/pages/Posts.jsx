@@ -9,12 +9,23 @@ export function Posts() {
     const [currentImage, setCurrentImage] = useState(null);
     const [photoModalOpen, setPhotoModalOpen] = useState(false);
     const [formModalOpen, setFormModalOpen] = useState(false);
+    const [editFormModalOpen, setEditFormModalOpen] = useState(false);
+    const [currentPostId, setCurrentPostId] = useState(null);
+
     const [newPost, setNewPost] = useState({
         title: "", content: "", previewImage: null
     });
     const [selectedFile, setSelectedFile] = useState(null);
+
+    const [editPost, setEditPost] = useState({
+        title: "", content: "", previewImage: null
+    });
+    const [selectedEditFile, setSelectedEditFile] = useState(null);
+
     const [uploadStatus, setUploadStatus] = useState("");
+    const [editUploadStatus, setEditUploadStatus] = useState("");
     const fileInputRef = useRef(null);
+    const editFileInputRef = useRef(null);
 
     useEffect(() => {
         fetchPosts().then((data) => {
@@ -22,7 +33,7 @@ export function Posts() {
             setLoading(false);
         }).catch((error) => {
             console.error('Failed to load posts:', error);
-        })
+        });
     }, [newPost]);
 
     const fetchPosts = async () => {
@@ -56,6 +67,27 @@ export function Posts() {
         }
     };
 
+    const handleEditInputChange = (e) => {
+        const {name, value} = e.target;
+        setEditPost(prev => ({
+            ...prev, [name]: value
+        }));
+    };
+
+    const handleEditFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setSelectedEditFile(e.target.files[0]);
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setEditPost(prev => ({
+                    ...prev, previewImage: event.target.result
+                }));
+            };
+            reader.readAsDataURL(e.target.files[0]);
+            setEditUploadStatus("File selected: " + e.target.files[0].name);
+        }
+    };
+
     const handleCreatePost = async (e) => {
         e.preventDefault();
         try {
@@ -84,6 +116,40 @@ export function Posts() {
             }
         } catch (err) {
             alert("Error creating post: " + (err.response?.data?.error || err.message));
+            console.error(err);
+        }
+    };
+
+    const handlePatchPost = async (e) => {
+        e.preventDefault();
+        try {
+            const formData = new FormData();
+            formData.append('title', editPost.title);
+            formData.append('content', editPost.content);
+
+            if (selectedEditFile) {
+                formData.append('image', selectedEditFile);
+            }
+
+            const response = await apiClient.patch(`/posts/${currentPostId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            const updatedPost = response.data;
+            setPosts(prev => prev.map(post => post._id === currentPostId ? updatedPost : post));
+
+            setEditFormModalOpen(false);
+            setEditPost({title: "", content: "", previewImage: null});
+            setSelectedEditFile(null);
+            setEditUploadStatus("");
+            setCurrentPostId(null);
+            if (editFileInputRef.current) {
+                editFileInputRef.current.value = null;
+            }
+        } catch (err) {
+            alert("Error updating post: " + (err.response?.data?.error || err.message));
             console.error(err);
         }
     };
@@ -129,6 +195,29 @@ export function Posts() {
         }
     };
 
+    const openEditFormModal = (post) => {
+        setEditPost({
+            title: post.title,
+            content: post.content,
+            previewImage: post.imageBlob ? `data:image/jpeg;base64,${post.imageBlob}` : null
+        });
+        setCurrentPostId(post._id);
+        setEditFormModalOpen(true);
+        document.body.style.overflow = "hidden";
+    };
+
+    const closeEditFormModal = () => {
+        setEditFormModalOpen(false);
+        document.body.style.overflow = "auto";
+        setEditPost({title: "", content: "", previewImage: null});
+        setSelectedEditFile(null);
+        setEditUploadStatus("");
+        setCurrentPostId(null);
+        if (editFileInputRef.current) {
+            editFileInputRef.current.value = null;
+        }
+    };
+
     if (loading) return <div className="admin-loading">Loading posts...</div>;
 
     const renderPosts = () => {
@@ -136,12 +225,20 @@ export function Posts() {
             <div className="post-header">
                 <h3>{post.title}</h3>
                 <AdminFeature>
-                    <button
-                        onClick={() => handleDeletePost(post._id)}
-                        className="delete-button"
-                    >
-                        Delete
-                    </button>
+                    <div className="post-actions">
+                        <button
+                            onClick={() => openEditFormModal(post)}
+                            className="edit-button"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            onClick={() => handleDeletePost(post._id)}
+                            className="delete-button"
+                        >
+                            Delete
+                        </button>
+                    </div>
                 </AdminFeature>
             </div>
             <div className="post-image">
@@ -178,7 +275,6 @@ export function Posts() {
                 <h2 className="admin-title">Existing Posts</h2>
                 {posts.length === 0 ? (<p className="no-posts">No posts available</p>) : (renderPosts())}
             </div>
-
             {photoModalOpen && currentImage && (<PhotoView
                 src={currentImage.src}
                 alt={currentImage.alt}
@@ -247,11 +343,93 @@ export function Posts() {
                             </div>
 
                             <div className="form-actions">
-                                <button type="button" className="cancel-button" onClick={closeFormModal}>
+                                <button
+                                    type="button"
+                                    className="cancel-button"
+                                    onClick={closeFormModal}
+                                >
                                     Cancel
                                 </button>
                                 <button type="submit" className="admin-button">
                                     Create Post
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>)}
+            {editFormModalOpen && (<div className="modal-overlay">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h2 className="modal-title">Edit Post</h2>
+                        <button className="modal-close" onClick={closeEditFormModal}>×</button>
+                    </div>
+                    <div className="modal-body">
+                        <form className="admin-form" onSubmit={handlePatchPost}>
+                            <div className="form-group">
+                                <label htmlFor="edit-title">Title</label>
+                                <input
+                                    type="text"
+                                    id="edit-title"
+                                    name="title"
+                                    value={editPost.title}
+                                    onChange={handleEditInputChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="edit-content">Content</label>
+                                <textarea
+                                    id="edit-content"
+                                    name="content"
+                                    value={editPost.content}
+                                    onChange={handleEditInputChange}
+                                    required
+                                    rows="6"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="edit-image">Upload New Image (Optional)</label>
+                                <div className="file-upload-container">
+                                    <input
+                                        type="file"
+                                        id="edit-image"
+                                        name="image"
+                                        onChange={handleEditFileChange}
+                                        accept="image/*"
+                                        ref={editFileInputRef}
+                                        className="file-input"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="file-select-button"
+                                        onClick={() => editFileInputRef.current.click()}
+                                    >
+                                        Select Photo
+                                    </button>
+                                    <span className="file-status">{editUploadStatus}</span>
+                                </div>
+                                {editPost.previewImage && (<div className="image-preview">
+                                    <img
+                                        src={editPost.previewImage}
+                                        alt="Preview"
+                                        style={{maxWidth: '200px', marginTop: '10px'}}
+                                    />
+                                </div>)}
+                            </div>
+
+                            <div className="form-actions">
+                                <button
+                                    type="button"
+                                    className="cancel-button"
+                                    onClick={closeEditFormModal}
+                                >
+                                    Cancel
+                                </button>
+                                <button type="submit" className="admin-button">
+                                    Update Post
                                 </button>
                             </div>
                         </form>

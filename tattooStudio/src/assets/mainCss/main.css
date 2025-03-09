@@ -419,6 +419,20 @@ body {
     margin-top: 5px;
 }
 
+.admin-button, .edit-button {
+    padding: 10px 15px;
+    background-color: var(--color1);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: "Merry", sans-serif;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
 .admin-button:hover {
     background-color: var(--color2);
 }
