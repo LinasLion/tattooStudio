@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import {PhotoView} from "../components/PhotoView.jsx";
-
-const API_URL = 'http://localhost:5000';
+import apiClient from "../services/api";
+import {AdminFeature} from "../components/AdminFeature.jsx";
 
 export function Posts() {
     const [posts, setPosts] = useState([]);
@@ -17,25 +17,21 @@ export function Posts() {
     const fileInputRef = useRef(null);
 
     useEffect(() => {
-        fetchPosts();
-    }, []);
+        fetchPosts().then((data) => {
+            setPosts(data);
+            setLoading(false);
+        }).catch((error) => {
+            console.error('Failed to load posts:', error);
+        })
+    }, [newPost]);
 
     const fetchPosts = async () => {
         try {
-            const response = await fetch(`${API_URL}/posts`);
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch posts');
-            }
-
-            const data = await response.json();
-            console.log("Fetched posts:", data);
-            setPosts(data);
+            const response = await apiClient.get('/posts');
+            return response.data;
         } catch (error) {
-            alert("Error loading posts: " + error.message);
-            console.error(error);
-        } finally {
-            setLoading(false);
+            console.error('Failed to fetch posts:', error);
+            throw new Error('Failed to fetch posts');
         }
     };
 
@@ -71,20 +67,13 @@ export function Posts() {
                 formData.append('image', selectedFile);
             }
 
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/posts`, {
-                method: 'POST', headers: {
-                    'Authorization': `Bearer ${token}`
-                }, body: formData
+            const response = await apiClient.post('/posts', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
 
-            console.log("Create post response:", response);
-
-            if (!response.ok) {
-                throw new Error('Failed to create post');
-            }
-
-            const createdPost = await response.json();
+            const createdPost = response.data;
             setPosts(prev => [createdPost, ...prev]);
             setNewPost({title: "", content: "", previewImage: null});
             setSelectedFile(null);
@@ -94,7 +83,7 @@ export function Posts() {
                 fileInputRef.current.value = null;
             }
         } catch (err) {
-            alert("Error creating post: " + err.message);
+            alert("Error creating post: " + (err.response?.data?.error || err.message));
             console.error(err);
         }
     };
@@ -105,20 +94,10 @@ export function Posts() {
         }
 
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/posts/${postId}`, {
-                method: 'DELETE', headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to delete post');
-            }
-
+            await apiClient.delete(`/posts/${postId}`);
             setPosts(prev => prev.filter(post => post._id !== postId));
         } catch (err) {
-            alert("Error deleting post: " + err.message);
+            alert("Error deleting post: " + (err.response?.data?.error || err.message));
             console.error(err);
         }
     };
@@ -142,7 +121,6 @@ export function Posts() {
     const closeFormModal = () => {
         setFormModalOpen(false);
         document.body.style.overflow = "auto";
-        // Reset form state
         setNewPost({title: "", content: "", previewImage: null});
         setSelectedFile(null);
         setUploadStatus("");
@@ -153,20 +131,20 @@ export function Posts() {
 
     if (loading) return <div className="admin-loading">Loading posts...</div>;
 
-    const isAdmin = localStorage.getItem('token');
-
     const renderPosts = () => {
         return posts.map(post => (<div key={post._id} className="post-item">
             <div className="post-header">
                 <h3>{post.title}</h3>
-                {isAdmin && (<button
-                    onClick={() => handleDeletePost(post._id)}
-                    className="delete-button"
-                >
-                    Delete
-                </button>)}
+                <AdminFeature>
+                    <button
+                        onClick={() => handleDeletePost(post._id)}
+                        className="delete-button"
+                    >
+                        Delete
+                    </button>
+                </AdminFeature>
             </div>
-            {post.imageBlob ? (<div className="post-image">
+            <div className="post-image">
                 <img
                     src={`data:image/jpeg;base64,${post.imageBlob}`}
                     alt={post.title}
@@ -175,9 +153,7 @@ export function Posts() {
                     })}
                     style={{cursor: "pointer"}}
                 />
-            </div>) : (<div className="post-image-placeholder">
-                No image available at moment. The image may appear after a refresh.
-            </div>)}
+            </div>
             <div className="post-content">
                 {post.content.substring(0, 150)}
                 {post.content.length > 150 ? "..." : ""}
@@ -191,13 +167,13 @@ export function Posts() {
     return (<div className="content">
         <div className="admin-container">
             <h1 className="websiteTitle">Posts</h1>
-
-            {isAdmin && (<div className="admin-actions">
-                <button onClick={openFormModal} className="admin-button create-post-btn">
-                    Create New Post
-                </button>
-            </div>)}
-
+            <AdminFeature>
+                <div className="admin-actions">
+                    <button onClick={openFormModal} className="admin-button create-post-btn">
+                        Create New Post
+                    </button>
+                </div>
+            </AdminFeature>
             <div className="posts-list">
                 <h2 className="admin-title">Existing Posts</h2>
                 {posts.length === 0 ? (<p className="no-posts">No posts available</p>) : (renderPosts())}
@@ -208,8 +184,6 @@ export function Posts() {
                 alt={currentImage.alt}
                 closeModal={closePhotoModal}
             />)}
-
-            {/* Modal for Create Post Form */}
             {formModalOpen && (<div className="modal-overlay">
                 <div className="modal-content">
                     <div className="modal-header">

@@ -1,7 +1,12 @@
 import logo from "../assets/img/logo.png";
 import HeaderButton from "./HeaderButton";
+import {useAuth} from "../contexts/authContext";
 
 export function Header() {
+    const {isAuthenticated} = useAuth();
+
+    console.log(isAuthenticated);
+
     return (
         <header className="header-navigation">
             <img
@@ -38,13 +43,14 @@ export function Header() {
                         className="header-navigation__menu__link"
                     />
                 </li>
+                {!isAuthenticated && (
                 <li>
                     <HeaderButton
                         path="/login"
                         title="Login"
                         className="header-navigation__menu__link"
                     />
-                </li>
+                </li>)}
             </ul>
         </header>
     );

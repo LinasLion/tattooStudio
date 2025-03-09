@@ -1,19 +1,19 @@
-import React, {useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
-
-const API_URL = "http://localhost:5000";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/authContext.jsx";
+import api from "../services/api";
 
 export function Login() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
+        if (isAuthenticated) {
             navigate('/home');
         }
-    }, [navigate]);
+    }, [isAuthenticated, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,26 +26,16 @@ export function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch(`${API_URL}/auth/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({password}),
-            });
+            const response = await api.post("/auth/login", { password });
 
-            const data = await response.json();
+            localStorage.setItem("token", response.data.token);
 
-            if (!response.ok) {
-                throw new Error(data.error || "Authentication failed");
-            }
-
-            localStorage.setItem("token", data.token);
-
+            window.location.reload();
             navigate('/home');
         } catch (err) {
+            const errorMessage = err.response?.data?.error || "Authentication failed";
             alert("Invalid password. Please try again.");
-            console.error("Login error:", err);
+            console.error("Login error:", errorMessage);
         } finally {
             setLoading(false);
         }

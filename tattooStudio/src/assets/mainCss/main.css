@@ -198,7 +198,7 @@ body {
     max-height: 90vh;
     width: auto;
     height: auto;
-    display: inline-flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 12px;
@@ -214,6 +214,22 @@ body {
     height: auto;
     object-fit: contain;
     border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+    .modal-content-preview {
+        max-width: 98%;
+    }
+
+    .modal-image-preview {
+        max-height: 80vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-overlay-preview {
+        padding: 10px;
+    }
 }
 
 .modal-content {

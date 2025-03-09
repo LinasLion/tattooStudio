@@ -10,6 +10,7 @@ design
 tattooStudio/node_modules/
 tattooStudio/build/
 tattooStudio/package-lock.json
+tattooStudio-api/uploads/
 
 # System files
 .DS_Store
