@@ -1,6 +1,6 @@
 # Getting Started
 
-Follow these instructions to set up and run the application on your local machine at Luleå University of Technology (LTU).
+Follow these instructions to set up and run the application on your local machine
 
 ## Prerequisites
 
