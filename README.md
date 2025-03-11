@@ -74,6 +74,5 @@ Create a `.env` file in the root directory with the following variables:
 
 ```
 JWT_SECRET=a843cc6e-2761-4e1d-b61b-0b5332a6686f
-REFRESH_TOKEN_SECRET=7b3b3b7b-7b3b-7b3b-7b3b-7b3b7b3b7b3b
 MONGODB_URI=mongodb://localhost:27017/postsdb
 ```
