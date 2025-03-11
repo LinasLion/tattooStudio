@@ -241,16 +241,18 @@ export function Posts() {
                     </div>
                 </AdminFeature>
             </div>
-            <div className="post-image">
-                <img
-                    src={`data:image/jpeg;base64,${post.imageBlob}`}
-                    alt={post.title}
-                    onClick={() => openPhotoModal({
-                        src: `data:image/jpeg;base64,${post.imageBlob}`, alt: post.title
-                    })}
-                    style={{cursor: "pointer"}}
-                />
-            </div>
+            {
+                post.imageBlob && (<div className="post-image">
+                    <img
+                        src={`data:image/jpeg;base64,${post.imageBlob}`}
+                        alt={post.title}
+                        onClick={() => openPhotoModal({
+                            src: `data:image/jpeg;base64,${post.imageBlob}`, alt: post.title
+                        })}
+                        style={{cursor: "pointer"}}
+                    />
+                </div>)
+            }
             <div className="post-content">
                 {post.content.substring(0, 150)}
                 {post.content.length > 150 ? "..." : ""}
@@ -313,7 +315,7 @@ export function Posts() {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="image">Upload Image</label>
+                                <label htmlFor="image">Upload Image (Optional)</label>
                                 <div className="file-upload-container">
                                     <input
                                         type="file"
