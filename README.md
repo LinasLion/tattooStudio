@@ -16,7 +16,7 @@ Follow these instructions to set up and run the application on your local machin
    cd tattooStudio
    ```
 
-2. Install dependencies for API:
+2. Install dependencies for Web APP:
    ```bash
    cd tattooStudio
    npm install
@@ -45,15 +45,7 @@ You have two options for running MongoDB:
    ```bash
    mongo --eval "db.version()"
    ```
-
-### Option 2: Use Docker (Recommended for LTU environments)
-
-1. Make sure Docker is installed on your system
-2. Run MongoDB using Docker:
-   ```bash
-   docker run -d -p 27017:27017 --name mongodb mongo:latest
-   ```
-
+   
 ## Running the Application
 
 Start both the API server and client application with a single command:

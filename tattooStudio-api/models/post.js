@@ -33,10 +33,6 @@ PostSchema.virtual('formattedCreatedAt').get(function() {
     return this.createdAt.toLocaleString();
 });
 
-PostSchema.virtual('formattedUpdatedAt').get(function() {
-    return this.updateAt.toLocaleString();
-});
-
 PostSchema.index({ title: 'text', content: 'text' });
 
 PostSchema.pre('save', function(next) {
