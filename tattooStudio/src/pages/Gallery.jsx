@@ -85,6 +85,8 @@ export function Gallery() {
         } catch (err) {
             alert("Error uploading photo: " + (err.response?.data?.error || err.message));
             console.error(err);
+        } finally {
+            fetchPhotos();
         }
     };
 
@@ -99,6 +101,8 @@ export function Gallery() {
         } catch (err) {
             alert("Error deleting photo: " + (err.response?.data?.error || err.message));
             console.error(err);
+        } finally {
+            fetchPhotos();
         }
     };
 
@@ -133,8 +137,6 @@ export function Gallery() {
         document.body.style.overflow = "";
         document.body.style.paddingRight = "";
     };
-
-    if (loading) return <div className="gallery-loading">Loading gallery...</div>;
 
     return (<div className="content" ref={galleryRef}>
         <div className="gallery-container">

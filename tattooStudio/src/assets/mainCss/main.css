@@ -44,7 +44,7 @@ body {
 }
 
 .active-nav {
-    color: #3a7bc8;
+    color: #000;
     font-weight: 700;
     position: relative;
 }
@@ -56,7 +56,7 @@ body {
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #3a7bc8;
+    background-color: #000
 }
 
 .header-navigation__logo {

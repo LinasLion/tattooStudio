@@ -24,7 +24,7 @@ export function Header() {
                     <HeaderButton
                         path="/home"
                         title="Home"
-                        className={`header-navigation__menu__link ${currentPath === "/home" ? "active-nav" : ""}`}
+                        className={`header-navigation__menu__link ${(currentPath === "/home" || currentPath === "/") ? "active-nav" : ""}`}
                     />
                 </li>
                 <li>

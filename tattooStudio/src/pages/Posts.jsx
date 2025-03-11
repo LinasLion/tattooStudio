@@ -114,9 +114,12 @@ export function Posts() {
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
             }, 100);
+
         } catch (err) {
             alert("Error creating post: " + (err.response?.data?.error || err.message));
             console.error(err);
+        } finally {
+            fetchPosts();
         }
     };
 
@@ -141,13 +144,14 @@ export function Posts() {
             setPosts(prev => prev.map(post => post._id === currentPostId ? updatedPost : post));
             closeEditFormModal();
 
-            // Force layout recalculation
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
             }, 100);
         } catch (err) {
             alert("Error updating post: " + (err.response?.data?.error || err.message));
             console.error(err);
+        } finally {
+            fetchPosts();
         }
     };
 
@@ -160,13 +164,14 @@ export function Posts() {
             await apiClient.delete(`/posts/${postId}`);
             setPosts(prev => prev.filter(post => post._id !== postId));
 
-            // Force layout recalculation
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
             }, 100);
         } catch (err) {
             alert("Error deleting post: " + (err.response?.data?.error || err.message));
             console.error(err);
+        } finally {
+            fetchPosts();
         }
     };
 
@@ -224,8 +229,6 @@ export function Posts() {
             editFileInputRef.current.value = null;
         }
     };
-
-    if (loading) return <div className="admin-loading">Loading posts...</div>;
 
     const renderPosts = () => {
         return posts.map(post => (<div key={post._id} className="post-item">
