@@ -69,5 +69,5 @@ Create a `.env` file in the root directory with the following variables:
 
 ```
 JWT_SECRET=a843cc6e-2761-4e1d-b61b-0b5332a6686f
-MONGODB_URI=mongodb://localhost:27017/postsdb
+MONGODB_URI=mongodb://localhost:27017/studioDb
 ```
