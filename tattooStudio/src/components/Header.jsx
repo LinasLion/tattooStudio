@@ -1,9 +1,12 @@
 import logo from "../assets/img/logo.png";
 import HeaderButton from "./HeaderButton";
 import {useAuth} from "../contexts/authContext";
+import {useLocation} from "react-router-dom";
 
 export function Header() {
     const {isAuthenticated, logout} = useAuth();
+    const location = useLocation();
+    const currentPath = location.pathname;
 
     const handleLogOut = () => {
         logout();
@@ -21,28 +24,28 @@ export function Header() {
                     <HeaderButton
                         path="/home"
                         title="Home"
-                        className="header-navigation__menu__link"
+                        className={`header-navigation__menu__link ${currentPath === "/home" ? "active-nav" : ""}`}
                     />
                 </li>
                 <li>
                     <HeaderButton
                         path="/studio"
                         title="Studio"
-                        className="header-navigation__menu__link"
+                        className={`header-navigation__menu__link ${currentPath === "/studio" ? "active-nav" : ""}`}
                     />
                 </li>
                 <li>
                     <HeaderButton
                         path="/gallery"
                         title="Gallery"
-                        className="header-navigation__menu__link"
+                        className={`header-navigation__menu__link ${currentPath === "/gallery" ? "active-nav" : ""}`}
                     />
                 </li>
                 <li>
                     <HeaderButton
                         path="/posts"
                         title="Posts"
-                        className="header-navigation__menu__link"
+                        className={`header-navigation__menu__link ${currentPath === "/posts" ? "active-nav" : ""}`}
                     />
                 </li>
                 {isAuthenticated ? (
@@ -52,16 +55,14 @@ export function Header() {
                             onClick={handleLogOut}
                             title="Logout"
                             className="header-navigation__menu__link"
-                        >
-                            Logout
-                        </HeaderButton>
+                        />
                     </li>
                 ) : (
                     <li>
                         <HeaderButton
                             path="/login"
                             title="Login"
-                            className="header-navigation__menu__link"
+                            className={`header-navigation__menu__link ${currentPath === "/login" ? "active-nav" : ""}`}
                         />
                     </li>
                 )}

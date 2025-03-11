@@ -22,8 +22,7 @@ const storage = multer.diskStorage({
         } catch (err) {
             cb(err, uploadDir);
         }
-    },
-    filename: (req, file, cb) => {
+    }, filename: (req, file, cb) => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
         cb(null, `post-image-${uniqueSuffix}${path.extname(file.originalname)}`);
     }
@@ -44,9 +43,7 @@ const fileFilter = (req, file, cb) => {
  * Configure multer with storage, file filter, and size limits
  */
 const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: {
+    storage: storage, fileFilter: fileFilter, limits: {
         fileSize: 5 * 1024 * 1024 // 5MB file size limit
     }
 });
@@ -59,7 +56,7 @@ const processPostImage = async (post) => {
     if (!post) return null;
 
     let imageBlob = null;
-    const processedPost = { ...post };
+    const processedPost = {...post};
 
     if (processedPost.image) {
         try {
@@ -73,8 +70,7 @@ const processPostImage = async (post) => {
     }
 
     return {
-        ...processedPost,
-        imageBlob,
+        ...processedPost, imageBlob,
     };
 };
 
@@ -108,8 +104,7 @@ router.get('/', async (req, res) => {
     } catch (error) {
         console.error('Error fetching posts:', error);
         res.status(500).json({
-            message: 'Error fetching posts',
-            error: error.message
+            message: 'Error fetching posts', error: error.message
         });
     }
 });
@@ -136,9 +131,7 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
         const postData = {
             title,
             content,
-            image: req.file
-                ? `/uploads/posts/${path.basename(req.file.path)}`
-                : null,
+            image: req.file ? `/uploads/posts/${path.basename(req.file.path)}` : null,
             createdAt: new Date()
         };
 
@@ -152,8 +145,7 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
         }
 
         res.status(500).json({
-            message: "Error creating post",
-            error: error.message
+            message: "Error creating post", error: error.message
         });
     }
 });
@@ -166,7 +158,7 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
 router.patch("/:id", authenticate, upload.single('image'), async (req, res) => {
     console.log("PATCH /posts/:id");
     try {
-        const { title, content } = req.body;
+        const {title, content} = req.body;
         const postId = req.params.id;
 
         const existingPost = await Post.findById(postId);
@@ -175,7 +167,7 @@ router.patch("/:id", authenticate, upload.single('image'), async (req, res) => {
             if (req.file) {
                 await cleanupUploadedFile(req.file.path);
             }
-            return res.status(404).json({ message: 'Post not found' });
+            return res.status(404).json({message: 'Post not found'});
         }
 
         const updateData = {};
@@ -191,10 +183,7 @@ router.patch("/:id", authenticate, upload.single('image'), async (req, res) => {
             updateData.image = `/uploads/posts/${path.basename(req.file.path)}`;
         }
 
-        const updatedPost = await Post.findByIdAndUpdate(
-            postId,
-            updateData,
-            { new: true } // Return the updated document
+        const updatedPost = await Post.findByIdAndUpdate(postId, updateData, {new: true} // Return the updated document
         ).lean();
 
         const processedPost = await processPostImage(updatedPost);
@@ -208,8 +197,7 @@ router.patch("/:id", authenticate, upload.single('image'), async (req, res) => {
         }
 
         res.status(500).json({
-            message: "Error updating post",
-            error: error.message
+            message: "Error updating post", error: error.message
         });
     }
 });
@@ -239,8 +227,7 @@ router.delete("/:id", authenticate, async (req, res) => {
     } catch (error) {
         console.error('Error deleting post:', error);
         res.status(500).json({
-            message: 'Error deleting post',
-            error: error.message
+            message: 'Error deleting post', error: error.message
         });
     }
 });

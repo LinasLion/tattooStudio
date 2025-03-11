@@ -19,8 +19,7 @@ router.post("/login", (req, res) => {
         const token = generateToken({role: "admin"});
 
         res.json({
-            token,
-            expiresIn: JWT_EXPIRY
+            token, expiresIn: JWT_EXPIRY
         });
     } catch (error) {
         console.error("Token generation error:", error);
@@ -46,6 +45,5 @@ const authenticate = (req, res, next) => {
 };
 
 module.exports = {
-    authRouter: router,
-    authenticate,
+    authRouter: router, authenticate,
 };

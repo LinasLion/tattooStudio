@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { authRouter }= require("./routes/auth"); // Import both
+const {authRouter} = require("./routes/auth"); // Import both
 const postsRouter = require("./routes/posts");
 const galleryRouter = require("./routes/gallery");
 const mongoose = require("mongoose");
@@ -11,9 +11,8 @@ app.use(express.json());
 app.use(cors());
 
 app.use(cors({
-    origin: 'http://localhost:5173', // TODO
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 mongoose.connect(process.env.MONGODB_URI)
@@ -41,5 +40,5 @@ app.use("/posts", postsRouter);
 app.use("/gallery", galleryRouter);
 
 
-const PORT = 5000;
+const PORT = 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

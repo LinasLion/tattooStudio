@@ -7,10 +7,7 @@ export function Studio() {
     const [modalOpen, setModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
 
-    const images = [
-        {src: image1, alt: "Studio Image 1"},
-        {src: image2, alt: "Studio Image 2"},
-    ];
+    const images = [{src: image1, alt: "Studio Image 1"}, {src: image2, alt: "Studio Image 2"},];
 
     const openModal = (image) => {
         setCurrentImage(image);
@@ -23,30 +20,24 @@ export function Studio() {
         document.body.style.overflow = "auto";
     };
 
-    return (
-        <div className="content">
+    return (<div className="content">
             <h1 className="websiteTitle">TATTOO STUDIO</h1>
             <div className="studio-photos">
                 <div className="studio__gallery">
-                    {images.map((image, index) => (
-                        <div className="studio__photo" key={index}>
+                    {images.map((image, index) => (<div className="studio__photo" key={index}>
                             <img
                                 src={image.src}
                                 alt={image.alt}
                                 onClick={() => openModal(image)}
                                 style={{cursor: "pointer"}} // Add pointer cursor to indicate clickable
                             />
-                        </div>
-                    ))}
+                        </div>))}
                 </div>
             </div>
-            {modalOpen && (
-                <PhotoView
+            {modalOpen && (<PhotoView
                     src={currentImage.src}
                     alt={currentImage.alt}
                     closeModal={closeModal}
-                />
-            )}
-        </div>
-    );
+                />)}
+        </div>);
 }

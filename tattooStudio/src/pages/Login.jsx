@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/authContext.jsx";
+import React, {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "../contexts/authContext.jsx";
 import apiClient from "../services/api";
 
 export function Login() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const {isAuthenticated} = useAuth();
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -26,7 +26,7 @@ export function Login() {
         setLoading(true);
 
         try {
-            const response = await apiClient.post("/auth/login", { password });
+            const response = await apiClient.post("/auth/login", {password});
 
             localStorage.setItem("token", response.data.token);
 
@@ -41,8 +41,7 @@ export function Login() {
         }
     };
 
-    return (
-        <div className="content">
+    return (<div className="content">
             <div className="login-container">
                 <h1 className="websiteTitle">TATTOO STUDIO</h1>
                 <div className="login-form-wrapper">
@@ -68,6 +67,5 @@ export function Login() {
                     </form>
                 </div>
             </div>
-        </div>
-    );
+        </div>);
 }

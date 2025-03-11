@@ -19,8 +19,7 @@ const storage = multer.diskStorage({
             fs.mkdirSync(uploadDir, {recursive: true});
         }
         cb(null, uploadDir);
-    },
-    filename: function (req, file, cb) {
+    }, filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         cb(null, uniqueSuffix + path.extname(file.originalname));
     }
@@ -32,8 +31,7 @@ const storage = multer.diskStorage({
  * - Sets 5MB size limit
  */
 const upload = multer({
-    storage: storage,
-    limits: {fileSize: 5 * 1024 * 1024}, // 5MB limit
+    storage: storage, limits: {fileSize: 5 * 1024 * 1024}, // 5MB limit
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
@@ -104,8 +102,7 @@ router.get('/', async (req, res) => {
     } catch (error) {
         console.error('Error fetching photos:', error);
         res.status(500).json({
-            message: 'Failed to fetch photos',
-            error: error.message
+            message: 'Failed to fetch photos', error: error.message
         });
     }
 });
@@ -125,8 +122,7 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
         const relativePath = req.file.path.replace(path.resolve(__dirname, '..') + '/', '');
 
         const newPhoto = new Gallery({
-            title: req.body.title || '',
-            image: relativePath,
+            title: req.body.title || '', image: relativePath,
         });
 
         const savedPhoto = await newPhoto.save();
@@ -143,8 +139,7 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
         }
 
         res.status(500).json({
-            message: 'Failed to create photo',
-            error: error.message
+            message: 'Failed to create photo', error: error.message
         });
     }
 });
@@ -173,8 +168,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     } catch (error) {
         console.error('Error deleting photo:', error);
         res.status(500).json({
-            message: 'Failed to delete photo',
-            error: error.message
+            message: 'Failed to delete photo', error: error.message
         });
     }
 });
