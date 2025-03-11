@@ -3,9 +3,11 @@ import HeaderButton from "./HeaderButton";
 import {useAuth} from "../contexts/authContext";
 
 export function Header() {
-    const {isAuthenticated} = useAuth();
+    const {isAuthenticated, logout} = useAuth();
 
-    console.log(isAuthenticated);
+    const handleLogOut = () => {
+        logout();
+    }
 
     return (
         <header className="header-navigation">
@@ -43,14 +45,26 @@ export function Header() {
                         className="header-navigation__menu__link"
                     />
                 </li>
-                {!isAuthenticated && (
-                <li>
-                    <HeaderButton
-                        path="/login"
-                        title="Login"
-                        className="header-navigation__menu__link"
-                    />
-                </li>)}
+                {isAuthenticated ? (
+                    <li>
+                        <HeaderButton
+                            path="/home"
+                            onClick={handleLogOut}
+                            title="Logout"
+                            className="header-navigation__menu__link"
+                        >
+                            Logout
+                        </HeaderButton>
+                    </li>
+                ) : (
+                    <li>
+                        <HeaderButton
+                            path="/login"
+                            title="Login"
+                            className="header-navigation__menu__link"
+                        />
+                    </li>
+                )}
             </ul>
         </header>
     );
