@@ -1,8 +1,6 @@
 import React, {useState} from "react";
-import image1 from "../public/studio/images1.jpg";
-import image2 from "../public/studio/images2.jpg";
-import image3 from "../public/studio/images3.jpg";
-import image4 from "../public/studio/images4.jpg";
+import image1 from "../public/studio/image1.jpg";
+import image2 from "../public/studio/image2.jpg";
 import {PhotoView} from "../components/PhotoView.jsx";
 
 export function Studio() {
@@ -12,8 +10,6 @@ export function Studio() {
     const images = [
         {src: image1, alt: "Studio Image 1"},
         {src: image2, alt: "Studio Image 2"},
-        {src: image3, alt: "Studio Image 3"},
-        {src: image4, alt: "Studio Image 4"},
     ];
 
     const openModal = (image) => {

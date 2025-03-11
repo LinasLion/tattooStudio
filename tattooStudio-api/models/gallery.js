@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const GallerySchema = new mongoose.Schema({
     title: {
         type: String,
-        required: [true, 'Please add a title'],
+        default: null,
         trim: true,
         maxlength: [100, 'Title cannot be more than 100 characters']
     },

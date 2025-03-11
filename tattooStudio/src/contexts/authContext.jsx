@@ -10,7 +10,16 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+
+
         if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+
+            if (payload.exp < Date.now() / 1000) {
+                logout();
+                return;
+            }
+
             setIsAuthenticated(true);
         }
         setIsLoading(false);
@@ -18,6 +27,7 @@ export const AuthProvider = ({children}) => {
 
     const login = async (password) => {
         setError(null);
+
         try {
             const response = await api.post('/auth/login', {password});
             const {token} = response.data;
