@@ -30,21 +30,16 @@ Follow these instructions to set up and run the application on your local machin
 
 ## Setting Up MongoDB
 
-You have two options for running MongoDB:
-
-### Option 1: Use MongoDB locally
+### Use MongoDB locally
 
 1. Install MongoDB on your machine following the [official installation guide](https://docs.mongodb.com/manual/installation/)
 2. Start the MongoDB service:
    ```bash
-   sudo systemctl start mongod    # For Linux
+   sudo systemctl start mongod
    ```
    On Windows, MongoDB typically runs as a service automatically after installation
 
-3. Verify MongoDB is running:
-   ```bash
-   mongo --eval "db.version()"
-   ```
+3. Connect to local instance using MongoDB Compass
    
 ## Running the Application
 
