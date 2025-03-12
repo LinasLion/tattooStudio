@@ -1,12 +1,4 @@
-# Getting Started
 
-Follow these instructions to set up and run the application on your local machine
-
-## Prerequisites
-
-- Node.js (v14 or later)
-- npm (v6 or later)
-- MongoDB (v4.4 or later) or Docker
 
 ## Installation
 
@@ -28,7 +20,6 @@ Follow these instructions to set up and run the application on your local machin
    npm install
    ```
 
-## Setting Up MongoDB
 
 ### Use MongoDB locally
 
@@ -43,7 +34,6 @@ Follow these instructions to set up and run the application on your local machin
    
 ## Running the Application
 
-Start both the API server and client application with a single command:
 
 API: 
 
